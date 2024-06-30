@@ -1,0 +1,27 @@
+messages:
+  error: "mensagem de erro"
+
+Limite: 1000000
+
+Preco_De_Venda:
+  - DIAMOND#10:100.0
+  - IRON_INGOT#5:50.0
+  - GOLD_INGOT#2:25.0
+
+itens:
+  Nome_Do_Item_1:
+    item: FEATHER
+    Durabilidade: 10
+    Nome: "teste"
+    Lore:
+      - "lore 1"
+      - "lore 2"
+    Bonus: 1.5
+  Nome_Do_Item_2:
+    item: DIAMOND
+    Durabilidade: 15
+    Nome: "teste2"
+    Lore:
+      - "lore 3"
+      - "lore 4"
+    Bonus: 2.0
