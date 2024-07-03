@@ -20,6 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import taz.development.healtzsellall.commands.giveSellAll;
+import taz.development.healtzsellall.commands.reloadConfig;
 import taz.development.healtzsellall.items.obj.CustomItem;
 import taz.development.healtzsellall.items.obj.CustomItemHandler;
 import taz.development.healtzsellall.utils.ConfigUtil;
@@ -60,7 +61,8 @@ public final class Healtz_SellAll extends JavaPlugin {
 
         //registerItem(new FeatherOfAllSellings());
         registerListeners(new CustomItemHandler());
-        getCommand("giveShop").setExecutor(new giveSellAll());
+        getCommand("healtzgiveshop").setExecutor(new giveSellAll());
+        getCommand("healtzreloadconfig").setExecutor(new reloadConfig());
     }
 
     @Override
@@ -80,12 +82,18 @@ public final class Healtz_SellAll extends JavaPlugin {
         return econ != null;
     }
 
+    public void reloadPluginConfig() {
+        customItemMap.clear();
+        reloadConfig(); // Carrega o arquivo de configuração do disco
+        readConfigFile(); // Lê e aplica as configurações
+    }
+
     private void readConfigFile() {
         saveDefaultConfig();
         configUtil = new ConfigUtil(this);
 
         String errorMessage = configUtil.getErrorMessage();
-        getLogger().info("Mensagem de erro " + errorMessage);
+        //getLogger().info("Mensagem de erro " + errorMessage);
         Integer maxItems = configUtil.getLimite();
 
         prices = configUtil.getPrecoDeVenda();
@@ -122,9 +130,7 @@ public final class Healtz_SellAll extends JavaPlugin {
                 public void handleRightClick(Player player, ItemStack itemStack, PlayerInteractEvent event) {
                     @Nullable Block block = event.getClickedBlock();
                     if (block == null || block.getType() == Material.AIR) return;
-
                     if (block.getType() != Material.CHEST) return;
-
                     try {
                         if (WildChestsAPI.getChest(block.getLocation()).getChestType() == ChestType.STORAGE_UNIT) {
                             StorageChest chest = WildChestsAPI.getStorageChest(block.getLocation());
@@ -181,7 +187,10 @@ public final class Healtz_SellAll extends JavaPlugin {
                             }
                         });
 
-                        if (totalItems[0] == 0) return;
+                        if (totalItems[0] == 0) {
+                            player.sendMessage("§eNão existem itens aqui para vender");
+                            return;
+                        }
                         player.sendMessage("§fVocê vendeu §a" + totalItems[0] + " itens §fpor §a" + dinheiro[0] + " coins");
                         player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
                     }
@@ -205,3 +214,6 @@ public final class Healtz_SellAll extends JavaPlugin {
         Arrays.asList(listeners).forEach(i -> Bukkit.getPluginManager().registerEvents(i, this));
     }
 }
+
+
+
